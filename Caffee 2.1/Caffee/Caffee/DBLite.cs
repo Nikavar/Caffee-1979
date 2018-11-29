@@ -21,7 +21,6 @@ namespace Caffee
             Conn = new SQLiteConnection(path);
             Conn.CreateTable<TableProduct>();
             Conn.CreateTable<OrderItemTable>();
-            Conn.CreateTable<OrderTable>();
         }
 
         public void Add(Product p)
@@ -52,21 +51,14 @@ namespace Caffee
 
         /*Methods for OrderItem Class*/
 
-        public void AddOrder(List<OrderItem> ItemList)
+        public void AddOrder(OrderItem item)
         {
-            var row = new OrderTable() { SoldDate = DateTime.Now };
-            Conn.Insert(row);
-            
+            Conn.Insert(new OrderItemTable() {Quantity = item.Quantity, ProductId = item.product.ID,  SoldDate = DateTime.Now } );
+        }
 
-            foreach (var i in ItemList)
-            {
-                Conn.Insert(new OrderItemTable() { OrderId = row.Id, ProductId = i.product.ID, Quantity = i.Quantity });
-            }            
-
-            //var query = from order in Conn.Table<OrderTable>().ToList()
-            //            join orderItem in Conn.Table<OrderItemTable>().ToList()
-            //            join p in Conn.Table<TableProduct>().ToList();
-
+        public void RemoveOrder(OrderItem order)
+        {
+            Conn.Delete(Conn.Table<OrderItemTable>().FirstOrDefault(x => x.Id == order.Id));
         }
 
         public void Update(OrderItem order)
@@ -89,15 +81,8 @@ namespace Caffee
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public int OrderId { get; set; }
-        public int ProductId { get; set; }
         public int Quantity { get; set; }
-    }
-
-    public class OrderTable
-    {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
+        public int ProductId { get; set; }
         public DateTime SoldDate { get; set; }
     }
 

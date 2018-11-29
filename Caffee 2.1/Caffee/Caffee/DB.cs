@@ -42,14 +42,10 @@ namespace Caffee
 
         /* Methods for OrderItem Class in front side*/
 
-        public static void AddOrders(List<OrderItem> OrderList)
+        public static void AddOrders(OrderItem order)
         {
-            dbLite.AddOrder(OrderList);
+            dbLite.AddOrder(order);
         }
 
-        public static void UpdateOrder(OrderItem item)
-        {
-
-        }
     }
 }
